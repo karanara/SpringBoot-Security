@@ -43,7 +43,17 @@ public class DemoSecurityConfig {
 	
 	  @Bean
 	  public UserDetailsManager userDetailsManager(DataSource dataSource) {
-		return new JdbcUserDetailsManager(dataSource);
+		//return new JdbcUserDetailsManager(dataSource);
+		  //custom scheema which matches nothing to spring security table schema
+		  JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
+		  //define query to retreive a user by username
+		  
+		  jdbcUserDetailsManager.setUsersByUsernameQuery("select user_id,pw,active from members where user_id=?");
+		  
+		  //define query to retreive the authorities/roles by username
+		  jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("select user_id,role from roles where user_id=?");
+		  
+		  return jdbcUserDetailsManager;
 	  }
 
 	// Restrict url endpoints based on Roles
