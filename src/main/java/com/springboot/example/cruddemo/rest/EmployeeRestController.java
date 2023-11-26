@@ -1,4 +1,4 @@
-package com.springboot.example.cruddemo.rest;
+/*package com.springboot.example.cruddemo.rest;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class EmployeeRestController {
 	@GetMapping("/employee")
     public List<Employee> findAll(){
     	return employeeDAO.findAll();
-    }*/
+    }
 	
 	private EmployeeService employeeService;
 
@@ -75,4 +75,5 @@ public class EmployeeRestController {
 		return "deleted the employee with  "+ Id;
 		 
 	}
-}
+}*/
+// using spring data rest to create controllers for more than one entity.
