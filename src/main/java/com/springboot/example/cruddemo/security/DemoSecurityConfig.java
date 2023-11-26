@@ -1,17 +1,22 @@
 package com.springboot.example.cruddemo.security;
 
+import javax.sql.DataSource;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
+//import org.springframework.security.core.userdetails.User;
+//import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class DemoSecurityConfig {
+	/*
 	//Basic Configuration
 	@Bean
 	public InMemoryUserDetailsManager userDetailsManager () {
@@ -32,10 +37,17 @@ public class DemoSecurityConfig {
 			    .build();
 		return new InMemoryUserDetailsManager(ramya,joshna,baby);
 	}
-	//spring use this username and password instead of details given in application properties
+	//spring use this username and password instead of details given in application properties*/
+	
+	//using JDBC support for authentication no more hard coding for username and passwords
+	
+	  @Bean
+	  public UserDetailsManager userDetailsManager(DataSource dataSource) {
+		return new JdbcUserDetailsManager(dataSource);
+	  }
 
 	// Restrict url endpoints based on Roles
-
+    @Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 		http.authorizeHttpRequests(configurer->
 		      configurer
@@ -45,7 +57,7 @@ public class DemoSecurityConfig {
               .requestMatchers(HttpMethod.PUT,"/api/employee").hasRole("MANAGER")
               .requestMatchers(HttpMethod.DELETE,"/api/employee/**").hasRole("ADMIN")
 				);
-		//use Basic Http Authorization
+		//use Basic Http Authentication
 		http.httpBasic(Customizer.withDefaults());
 		//disable cross site Request Forgery
 		//in general not used for stateless REst API that use POST ,PUT,GET,DELETE methods
